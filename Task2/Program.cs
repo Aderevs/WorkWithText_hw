@@ -4,67 +4,8 @@ namespace Task2
 {
     internal partial class Program
     {
-        static async Task<string> GetHtmlAsync(string url)
-        {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                int remainingAttemptsCounter = 5;
-                while (remainingAttemptsCounter >= 0)
-                {
-                    try
-                    {
-                        HttpResponseMessage response = await httpClient.GetAsync(url);
-
-                        response.EnsureSuccessStatusCode();
-
-                        string htmlCode = await response.Content.ReadAsStringAsync();
-
-                        return htmlCode;
-                    }
-                    catch (HttpRequestException e)
-                    {
-                        Console.WriteLine($"Error during getting page: {e.Message}");
-                        Console.WriteLine($"remaining attempts: {--remainingAttemptsCounter}");
-
-                    }
-                }
-            }
-            return null;
-        }
-
-        static string[] GetReferences(string html)
-        {
-            List<string> references = new List<string>();
-            Regex regex = FindLinks();
-            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
-            {
-                references.Add(m.Groups["link"].ToString());
-            }
-            return references.ToArray();
-        }
-        static string[] GetPhoneNumres(string html)
-        {
-            List<string> numbers = new List<string>();
-            Regex regex = FindPhoneNumber();
-            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
-            {
-                numbers.Add(m.Groups["number"].ToString());
-            }
-            return numbers.ToArray();
-        }
-        static string[] GetEmailes(string html)
-        {
-            List<string> numbers = new List<string>();
-            Regex regex = FindEmailes();
-            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
-            {
-                numbers.Add(m.Groups["mail"].ToString());
-            }
-            return numbers.ToArray();
-        }
         static async Task Main()
         {
-
             string htmlCode = await GetHtmlAsync("https://ideainyou.com/");
             if (htmlCode.Any())
             {
@@ -104,6 +45,63 @@ namespace Task2
             {
                 await Console.Out.WriteLineAsync("cant get html code");
             }
+        }
+        static async Task<string> GetHtmlAsync(string url)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                int remainingAttemptsCounter = 5;
+                while (remainingAttemptsCounter >= 0)
+                {
+                    try
+                    {
+                        HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                        response.EnsureSuccessStatusCode();
+
+                        string htmlCode = await response.Content.ReadAsStringAsync();
+
+                        return htmlCode;
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine($"Error during getting page: {e.Message}");
+                        Console.WriteLine($"remaining attempts: {--remainingAttemptsCounter}");
+
+                    }
+                }
+            }
+            return null;
+        }
+        static string[] GetReferences(string html)
+        {
+            List<string> references = new List<string>();
+            Regex regex = FindLinks();
+            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
+            {
+                references.Add(m.Groups["link"].ToString());
+            }
+            return references.ToArray();
+        }
+        static string[] GetPhoneNumres(string html)
+        {
+            List<string> numbers = new List<string>();
+            Regex regex = FindPhoneNumber();
+            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
+            {
+                numbers.Add(m.Groups["number"].ToString());
+            }
+            return numbers.ToArray();
+        }
+        static string[] GetEmailes(string html)
+        {
+            List<string> numbers = new List<string>();
+            Regex regex = FindEmailes();
+            for (Match m = regex.Match(html); m.Success; m = m.NextMatch())
+            {
+                numbers.Add(m.Groups["mail"].ToString());
+            }
+            return numbers.ToArray();
         }
 
         [GeneratedRegex(@"href=""(?<link>\S+)""")]
