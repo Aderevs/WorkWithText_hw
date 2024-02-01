@@ -9,6 +9,7 @@ namespace Decoder
         static void Main(string[] args)
         {
             WriteText("text.txt", Decode(ReadText("text.txt")));
+            Console.WriteLine(ReadText("text.txt"));
         }
         static string ReadText(string fileName)
         {
